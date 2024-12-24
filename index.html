@@ -16,10 +16,33 @@
             width: 300px;
             text-align: center;
         }
+        body,h1 {
+            margin:0;
+        }
+        button {
+            cursor: pointer;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 25px;
+            margin: 5px;
+            background-color: #FFB6C1; /* Light Pink */
+            color: white;
+            border: none;
+            transition: transform 0.2s ease;
+        }
+        button:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+        }
+        button:active {
+            transform: scale(0.95); /* Slightly shrink on press */
+        }
+
     </style>
 </head>
 <body>
     <h1>Press a letter to hear its sound!</h1>
+    <h2 id="header-key"></h2>
     <input type="text" id="input-box" placeholder="Press A to Z" maxlength="1" readonly>
     <p id="letter-info"></p>
     <image id="letter-image" width="500" src="images/a.webp"></p>
@@ -55,28 +78,49 @@
         };
 
         const soundFiles = {};
-
+        let buttonColors = [
+            "#FF5733", "#3498DB", "#FFEB3B", "#2ECC71", "#FF8C00", "#9B59B6", // Row 1
+            "#1ABC9C", "#FF66B2", "#32CD32", "#2980B9", "#FF7F50", "#FFDA00", // Row 2
+            "#E2008C", "#00BCD4", "#2ECC71", "#FF007F", "#4169E1", "#DC143C", // Row 3
+            "#8A2BE2", "#FFD700", "#7FFFD4", "#9B111E", "#FF5733", "#3498DB",  // Row 4
+            "#FF8C00", "#9B59B6"
+        ];
+        let headerHTML = '';
         // Iterate over the keys of letterSounds to create sound files for each letter
-        Object.keys(letterSounds).forEach(letter => {
+        Object.keys(letterSounds).forEach((letter, index) => {
             soundFiles[letter] = new Audio(`sounds/${letter.toUpperCase()}.ogg`);
+            headerHTML += `<button onclick="triggerKeydown('${letter.toLowerCase()}')" style="background-color:${buttonColors[index]}">${letter.toUpperCase()}</button>`;
         });
+        document.getElementById('header-key').innerHTML=headerHTML;
 
-        // Listen for key presses on the document
-        document.addEventListener('keydown', function(event) {
-            const letter = event.key.toLowerCase();  // Get the key that was pressed
+        // Function to update UI and play sound based on the letter
+        function updateLetterUI(letter) {
             const letterInfo = document.getElementById('letter-info');
             const inputBox = document.getElementById('input-box');
             const letterImg = document.getElementById('letter-image');
 
-            // Check if the pressed key is a letter
+            // Check if the letter exists in letterSounds
             if (letterSounds[letter]) {
                 letterImg.src = `images/${letter.toLowerCase()}.webp`;
                 inputBox.value = letter.toUpperCase();  // Set the pressed letter in the input box
                 letterInfo.textContent = `${letter.toUpperCase()} for ${letterSounds[letter]}`;
+                
+                // Play the corresponding sound
                 if (soundFiles[letter]) {
-                    soundFiles[letter].play();  // Play the corresponding sound
+                    soundFiles[letter].play();
                 }
             }
+        }
+
+        // Function to trigger keydown event dynamically for each letter
+        function triggerKeydown(letter) {
+            updateLetterUI(letter);  // Call the reusable function
+        }
+
+        // Listen for key presses on the document
+        document.addEventListener('keydown', function(event) {
+            const letter = event.key.toLowerCase();  // Get the key that was pressed
+            updateLetterUI(letter);  // Call the reusable function
         });
     </script>
 </body>
