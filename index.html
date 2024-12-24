@@ -37,16 +37,33 @@
         button:active {
             transform: scale(0.95); /* Slightly shrink on press */
         }
-
+        #img-parent {
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            height:250px; 
+            z-index: -1;
+            margin: 0 auto;
+        }
+        #letter-image {
+            position: absolute;
+            left:0;
+            top:0;
+            width: 100%; /* Make the image width 100% of the container */
+            max-width: 500px; /* Set a maximum width */
+            height: auto; /* Maintain aspect ratio */
+            margin: 20px 0; /* Add some spacing around the image */
+        }
     </style>
 </head>
 <body>
     <h1>Press a letter to hear its sound!</h1>
+    <div id="img-parent">
+        <image id="letter-image" src="images/a.webp"></p>
+    </div>
     <h2 id="header-key"></h2>
     <input type="text" id="input-box" placeholder="Press A to Z" maxlength="1" readonly>
     <p id="letter-info"></p>
-    <image id="letter-image" width="500" src="images/a.webp"></p>
-
     <script>
         const letterSounds = {
             'a': 'Apple',
